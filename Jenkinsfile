@@ -24,6 +24,15 @@ pipeline {
             }
         }
         stage('Test') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            environment {
+                NODE_OPTIONS = '--openssl-legacy-provider'
+            }
             steps {
                 echo 'Test stage'
                 sh '''
