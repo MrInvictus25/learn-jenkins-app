@@ -26,8 +26,9 @@ pipeline {
         stage('Test') {
             steps {
                 echo 'Test stage'
-                // sh '''
-                //     test -f build/$BUILD_FILE_NAME
+                sh '''
+                    test -f build/$index.html
+                '''
                 //     grep "Mainboard" build/$BUILD_FILE_NAME  # Grep command allows us to seek a specific string in the file
                 //     grep "Display" build/$BUILD_FILE_NAME
                 //     grep "Keyboard" build/$BUILD_FILE_NAME
