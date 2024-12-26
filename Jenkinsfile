@@ -36,6 +36,8 @@ pipeline {
             steps {
                 echo 'Test stage'
                 sh '''
+                     mkdir -p test-results
+                    chmod -R 777 test-results
                     test -f build/index.html
                     npm test
                 '''
