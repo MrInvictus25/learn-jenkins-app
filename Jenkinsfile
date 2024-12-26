@@ -9,6 +9,9 @@ pipeline {
                     reuseNode true
                 }
             }
+            environment {
+                NODE_OPTIONS = '--openssl-legacy-provider'
+            }
             steps {
                 sh '''
                     ls -la
