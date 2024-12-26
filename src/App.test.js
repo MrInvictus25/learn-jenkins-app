@@ -1,4 +1,4 @@
-import React from 'react'; // Add this import for React
+import React from 'react'; 
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom'; // For jest-dom matchers like toBeInTheDocument
 import App from './App';
