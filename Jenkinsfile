@@ -23,45 +23,51 @@ pipeline {
         //         '''
         //     }
         // }
-        stage('Test') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            environment {
-                NODE_OPTIONS = '--openssl-legacy-provider'
-            }
-            steps {
-                echo 'Test stage'
-                sh '''
-                    test -f build/index.html
-                    npm test
-                '''
-            }
-        }
+        
+        stage('Run Tests') {
 
-        stage('E2E') {
-            agent {
-                docker {
-                    image 'mcr.microsoft.com/playwright:v1.49.1-noble'
-                    reuseNode true
+            parallel {
+                stage('Test') {
+                    agent {
+                        docker {
+                            image 'node:18-alpine'
+                            reuseNode true
+                        }
+                    }
+                    environment {
+                        NODE_OPTIONS = '--openssl-legacy-provider'
+                    }
+                    steps {
+                        echo 'Test stage'
+                        sh '''
+                            test -f build/index.html
+                            npm test
+                        '''
+                    }
                 }
-            }
-            environment {
-                NODE_OPTIONS = '--openssl-legacy-provider'
-            }
-            steps {
-                echo 'Running E2E tests'
-                sh '''
-                    npm install
-                    npx playwright install
-                    npm install serve
-                    node_modules/.bin/serve -s build &
-                    sleep 10
-                    npx playwright test --reporter=line
-                '''
+
+                stage('E2E') {
+                    agent {
+                        docker {
+                            image 'mcr.microsoft.com/playwright:v1.49.1-noble'
+                            reuseNode true
+                        }
+                    }
+                    environment {
+                        NODE_OPTIONS = '--openssl-legacy-provider'
+                    }
+                    steps {
+                        echo 'Running E2E tests'
+                        sh '''
+                            npm install
+                            npx playwright install
+                            npm install serve
+                            node_modules/.bin/serve -s build &
+                            sleep 10
+                            npx playwright test --reporter=line
+                        '''
+                    }
+                }
             }
         }
     }
