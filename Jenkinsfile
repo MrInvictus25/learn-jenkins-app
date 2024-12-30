@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        NETLIFY_SITE_ID = '9ceaf691-fd8b-41e8-ab57-5a3107738b13'
+        NETLIFY_SITE_ID = 'ea70ca22-620e-4d6f-b752-8395714c5708'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
     }
 
@@ -111,7 +111,3 @@ pipeline {
         }
     }
 }
-
-
-
-v d dxjfjh cjdjfgkl k..w kl5t 4√tmmmmmQMN   vb      ≈ы
