@@ -127,7 +127,7 @@ pipeline {
                 NODE_OPTIONS = '--openssl-legacy-provider'
             }
             steps {
-                echo 'Running E2E tests'
+                echo 'Running Prod E2E tests'
                 sh '''
                     npx playwright test --reporter=line
                 '''
