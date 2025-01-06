@@ -120,8 +120,11 @@ pipeline {
             }
 
             environment {
-                NODE_OPTIONS = '--openssl-legacy-provider'
                 CI_ENVIRONMENT_URL = 'https://vermillion-boba-a6cdb8.netlify.app'
+            }
+
+            environment2 {
+                NODE_OPTIONS = '--openssl-legacy-provider'
             }
             steps {
                 echo 'Running E2E tests'
