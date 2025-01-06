@@ -113,10 +113,12 @@ pipeline {
 
         stage('Approval') {
             steps {
-                input message: 'Would you like to perform deploying to Production?', ok: 'Yes, I would like'
+                timeout(time: 15, unit:'MINUTES') {
+                     input message: 'Would you like to perform deploying to Production?', ok: 'Yes, I would like'
+                }
             }
         }
-        
+
         stage('Deploy Prod') {
             agent {
                 docker {
