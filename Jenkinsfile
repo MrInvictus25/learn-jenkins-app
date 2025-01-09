@@ -157,13 +157,13 @@ pipeline {
             }
         }
 
-        stage('Approval') {
-            steps {
-                timeout(time: 1, unit:'MINUTES') {
-                     input message: 'Would you like to perform deploying to Production?', ok: 'Yes, I would like'
-                }
-            }
-        }
+        // stage('Approval') {
+        //     steps {
+        //         timeout(time: 1, unit:'MINUTES') {
+        //              input message: 'Would you like to perform deploying to Production?', ok: 'Yes, I would like'
+        //         }
+        //     }
+        // }
 
         stage('Deploy Prod') {
             agent {
@@ -183,7 +183,13 @@ pipeline {
                     echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
                     node_modules/.bin/netlify status
                     node_modules/.bin/netlify deploy --dir=build --prod
+                    npx playwright test --reporter=line
                 '''
+            }
+            post {
+                always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Prod E2E', reportTitles: '', useWrapperFileDirectly: true])
+                }
             }
         }
     }
