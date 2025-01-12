@@ -79,12 +79,9 @@ pipeline {
                     steps {
                         echo 'Running E2E tests'
                         sh '''
-                            npm install
-                            npx playwright install
-                            npm install serve
-                            node_modules/.bin/serve -s build &
+                            serve -s build &
                             sleep 10
-                            npx playwright test --reporter=line
+                            npx playwright test --reporter=html
                         '''
                     }
 
