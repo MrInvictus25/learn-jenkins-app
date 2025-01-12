@@ -143,7 +143,8 @@ pipeline {
                     npx playwright test  --reporter=html
                 '''
             } 
-
+                    // mcr.microsoft.com/playwright:v1.49.1-noble
+                    // mcr.microsoft.com/playwright:v1.39.0-noble
                     // node --version
                     // npm install netlify-cli node-jq      
                     // node_modules/.bin/netlify --version
