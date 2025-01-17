@@ -23,8 +23,6 @@ pipeline {
                     aws s3 ls
                 '''
                 }
-
-
             }
         }
         stage('Build') {
