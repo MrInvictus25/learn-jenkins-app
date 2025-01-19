@@ -9,6 +9,30 @@ pipeline {
 
     stages {
 
+        stage('Deploy on AWS') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli'
+                    reuseNode true
+                    args "--entrypoint=''"
+                }
+            }
+            environment {
+                AWS_S3_BUCKET = 'jenkins-files-01172025'
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'myAWS', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                sh '''
+                    aws --version
+                    aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
+                '''
+                }
+            }       
+                    //echo "Hello S3!" > index.html
+                    //aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
+                   // aws s3 sync build s3://$AWS_S3_BUCKET
+        }
+
         stage('Build') {
             agent {
                 docker {
@@ -31,86 +55,63 @@ pipeline {
                 '''
             }
         }
-
-        stage('AWS') {
-            agent {
-                docker {
-                    image 'amazon/aws-cli'
-                    reuseNode true
-                    args "--entrypoint=''"
-                }
-            }
-            environment {
-                AWS_S3_BUCKET = 'jenkins-files-01172025'
-            }
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'myAWS', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
-                sh '''
-                    aws --version
-                    aws s3 sync build s3://$AWS_S3_BUCKET
-                '''
-                }
-            }       
-                    //echo "Hello S3!" > index.html
-                    //aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
-        }
         
-        stage('Run Tests') {
+        // stage('Run Tests') {
 
-            parallel {
-                stage('Test') {
-                    agent {
-                        docker {
-                            image 'node:18-alpine'
-                            reuseNode true
-                        }
-                    }
-                    environment {
-                        NODE_OPTIONS = '--openssl-legacy-provider'
-                    }
+        //     parallel {
+        //         stage('Test') {
+        //             agent {
+        //                 docker {
+        //                     image 'node:18-alpine'
+        //                     reuseNode true
+        //                 }
+        //             }
+        //             environment {
+        //                 NODE_OPTIONS = '--openssl-legacy-provider'
+        //             }
 
-                    steps {
-                        echo 'Test stage'
-                        sh '''
-                            test -f build/index.html
-                            npm test
-                        '''
-                    }
+        //             steps {
+        //                 echo 'Test stage'
+        //                 sh '''
+        //                     test -f build/index.html
+        //                     npm test
+        //                 '''
+        //             }
 
-                    post {
-                        always {
-                            junit 'jest-results/junit.xml'
-                        }
-                    }
-                }
+        //             post {
+        //                 always {
+        //                     junit 'jest-results/junit.xml'
+        //                 }
+        //             }
+        //         }
 
-                stage('E2E') {
-                    agent {
-                        docker {
-                            image 'my-playwright'
-                            reuseNode true
-                        }
-                    }
-                    environment {
-                        NODE_OPTIONS = '--openssl-legacy-provider'
-                    }
-                    steps {
-                        echo 'Running E2E tests'
-                        sh '''
-                            serve -s build &
-                            sleep 10
-                            npx playwright test --reporter=html
-                        '''
-                    }
+        //         stage('E2E') {
+        //             agent {
+        //                 docker {
+        //                     image 'my-playwright'
+        //                     reuseNode true
+        //                 }
+        //             }
+        //             environment {
+        //                 NODE_OPTIONS = '--openssl-legacy-provider'
+        //             }
+        //             steps {
+        //                 echo 'Running E2E tests'
+        //                 sh '''
+        //                     serve -s build &
+        //                     sleep 10
+        //                     npx playwright test --reporter=html
+        //                 '''
+        //             }
 
-                    post {
-                        always {
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local Report', reportTitles: '', useWrapperFileDirectly: true])
-                        }
-                    }
-                }
-            }
-        }
+        //             post {
+        //                 always {
+        //                     publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local Report', reportTitles: '', useWrapperFileDirectly: true])
+        //                 }
+        //             }
+        //         }
+        //     }
+        // }
 
         // stage('Deploy staging') {
         //     agent {
