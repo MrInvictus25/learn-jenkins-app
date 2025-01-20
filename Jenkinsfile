@@ -26,8 +26,7 @@ pipeline {
                 sh '''
                     aws --version
 
-                    yum install -y aws-cli jq
-                    amazon-linux-extras enable epel
+                    yum clean all
                     yum install -y jq
                     LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
                     echo $LATEST_TD_REVISION
