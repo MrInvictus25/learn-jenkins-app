@@ -26,8 +26,8 @@ pipeline {
                 sh '''
                     aws --version
 
-                    yum repolist
-                    yum --disablerepo=amzn2-core/2/aarch64 install jq -y
+                    yum clean all
+                    yum install -y jq
                     LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
                     echo $LATEST_TD_REVISION
                     aws ecs update-service --cluster JenkinsApp-Cluster-Prod-2025 --service LearnJenkinsApp-Service-Prod --task-definition JenkinsApp-TaskDefinition-Prod:echo $LATEST_TD_REVISION
