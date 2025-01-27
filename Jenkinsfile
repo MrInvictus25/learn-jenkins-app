@@ -38,33 +38,31 @@ pipeline {
                     //echo "Hello S3!" > index.html
                     //aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
                    // aws s3 sync build s3://$AWS_S3_BUCKET
-                   //                     yum install jq -y  | jq '.taskDefinition.revision')
-                   // aws ecs update-service --cluster JenkinsApp-Cluster-Prod-2025 --service LearnJenkinsApp-Service-Prod --task-definition JenkinsApp-TaskDefinition-Prod:echo $LATEST_TD_REVISION
-
+                   
         }
 
-        stage('Build') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            environment {
-                NODE_OPTIONS = '--openssl-legacy-provider'
-            }
-            steps {
-                sh '''
-                    echo "Smal change"
-                    ls -la
-                    node --version
-                    npm --version
-                    npm ci
-                    npm run build
-                    ls -la
-                '''
-            }
-        }
+        // stage('Build') {
+        //     agent {
+        //         docker {
+        //             image 'node:18-alpine'
+        //             reuseNode true
+        //         }
+        //     }
+        //     environment {
+        //         NODE_OPTIONS = '--openssl-legacy-provider'
+        //     }
+        //     steps {
+        //         sh '''
+        //             echo "Smal change"
+        //             ls -la
+        //             node --version
+        //             npm --version
+        //             npm ci
+        //             npm run build
+        //             ls -la
+        //         '''
+        //     }
+        // }
         
         // stage('Run Tests') {
 
