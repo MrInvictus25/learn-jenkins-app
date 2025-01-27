@@ -13,7 +13,7 @@ pipeline {
         stage('Deploy on AWS') {
             agent {
                 docker {
-                    image 'amazon/aws-cli'
+                    image 'amazonlinux'
                     reuseNode true
                     args "-u root --entrypoint=''"
                 }
@@ -24,11 +24,9 @@ pipeline {
                 sh '''
                     aws --version
 
-                    yum install jq -y 
+                    
                     jq --version
-                    LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
-                    echo $LATEST_TD_REVISION
-                    aws ecs update-service --cluster JenkinsApp-Cluster-Prod-2025 --service LearnJenkinsApp-Service-Prod2 --task-definition JenkinsApp-TaskDefinition-Prod2:$LATEST_TD_REVISION
+
                 '''
                 }
             }       
@@ -39,6 +37,10 @@ pipeline {
                     //echo "Hello S3!" > index.html
                     //aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
                    // aws s3 sync build s3://$AWS_S3_BUCKET
+                //                        LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
+                //     echo $LATEST_TD_REVISION
+                //     aws ecs update-service --cluster JenkinsApp-Cluster-Prod-2025 --service LearnJenkinsApp-Service-Prod2 --task-definition JenkinsApp-TaskDefinition-Prod2:$LATEST_TD_REVISION
+                // '''
                    
         }
 
