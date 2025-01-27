@@ -24,7 +24,8 @@ pipeline {
                 sh '''
                     aws --version
 
-                    LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json)
+                    LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json --output json | \
+                    python3 -c "import sys, json; print(json.load(sys.stdin)['taskDefinition']['revision'])")
                     echo $LATEST_TD_REVISION
                     aws ecs update-service --cluster JenkinsApp-Cluster-Prod-2025 --service LearnJenkinsApp-Service-Prod2 --task-definition JenkinsApp-TaskDefinition-Prod2:$LATEST_TD_REVISION
                 '''
