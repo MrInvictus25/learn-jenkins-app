@@ -23,7 +23,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'myAWS', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                 sh '''
                     aws --version
-
+                    
+                    apk add --no-cache python3 py3-pip
                     LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json --output json | \
                     python3 -c "import sys, json; print(json.load(sys.stdin)['taskDefinition']['revision'])")
                     echo $LATEST_TD_REVISION
