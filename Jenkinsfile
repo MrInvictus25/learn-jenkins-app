@@ -24,8 +24,6 @@ pipeline {
                 sh '''
                     aws --version
 
-                    yum install jq -y 
-                    jq --version
                     LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | \
                         python3 -c "import sys, json; print(json.load(sys.stdin)['taskDefinition']['revision'])")
                     echo $LATEST_TD_REVISION
