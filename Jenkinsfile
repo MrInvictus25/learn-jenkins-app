@@ -13,6 +13,35 @@ pipeline {
 
     stages {
 
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            environment {
+                NODE_OPTIONS = '--openssl-legacy-provider'
+            }
+            steps {
+                sh '''
+                    echo "Smal change"
+                    ls -la
+                    node --version
+                    npm --version
+                    npm ci
+                    npm run build
+                    ls -la
+                '''
+            }
+        }
+
+        stage('Build Docker image') {
+            steps {
+                sh 'docker build -t myjenkinsapp .'
+            }
+        }
+
         stage('Deploy on AWS') {
             agent {
                 docker {
@@ -35,7 +64,7 @@ pipeline {
                 '''
                 }
             }       
-
+        }
             // environment {
             //     AWS_S3_BUCKET = 'jenkins-files-01172025'
             // }
@@ -46,31 +75,8 @@ pipeline {
                     //echo "Hello S3!" > index.html
                     //aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
                    // aws s3 sync build s3://$AWS_S3_BUCKET
-                   
-        }
+    }         
 
-        // stage('Build') {
-        //     agent {
-        //         docker {
-        //             image 'node:18-alpine'
-        //             reuseNode true
-        //         }
-        //     }
-        //     environment {
-        //         NODE_OPTIONS = '--openssl-legacy-provider'
-        //     }
-        //     steps {
-        //         sh '''
-        //             echo "Smal change"
-        //             ls -la
-        //             node --version
-        //             npm --version
-        //             npm ci
-        //             npm run build
-        //             ls -la
-        //         '''
-        //     }
-        // }
         
         // stage('Run Tests') {
 
