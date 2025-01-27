@@ -37,7 +37,6 @@ pipeline {
         }
 
         stage('Build Docker image') {
-
             agent {
                 docker {
                     image 'amazon/aws-cli'
@@ -52,7 +51,7 @@ pipeline {
                     docker build -t myjenkinsapp .
                 '''
             }
-        }
+        }   
 
         stage('Deploy on AWS') {
             agent {
