@@ -28,7 +28,6 @@ pipeline {
 
                     LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json)
                     echo $LATEST_TD_REVISION
-                    
                 '''
                 }
             }       
