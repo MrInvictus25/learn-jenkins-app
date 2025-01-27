@@ -27,7 +27,7 @@ pipeline {
                     aws --version
                     yum clean all
                     yum makecache
-                    yum install jq -y
+                    sudo yum install jq -y
                     jq --version
                     LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
                     echo $LATEST_TD_REVISION
