@@ -77,7 +77,7 @@ pipeline {
                    // aws s3 sync build s3://$AWS_S3_BUCKET
     }         
 
-        
+}        
         // stage('Run Tests') {
 
         //     parallel {
@@ -236,5 +236,3 @@ pipeline {
         //         }
         //     }
         // }
-    }
-}
