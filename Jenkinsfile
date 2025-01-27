@@ -24,11 +24,11 @@ pipeline {
                 sh '''
                     aws --version
                     
-                    yum install -y python3
-                    LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json --output json | \
-                    python3 -c "import sys, json; print(json.load(sys.stdin)['taskDefinition']['revision'])")
+              
+                    LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json)
                     echo $LATEST_TD_REVISION
-                    aws ecs update-service --cluster JenkinsApp-Cluster-Prod-2025 --service LearnJenkinsApp-Service-Prod2 --task-definition JenkinsApp-TaskDefinition-Prod2:$LATEST_TD_REVISION
+                    aws ecs update-service --cluster JenkinsApp-Cluster-Prod-2025 --service LearnJenkinsApp-Service-Prod2 --task-definition JenkinsApp-TaskDefinition-Prod2:7
+                    aws ecs wait services-stable --cluster LearnJenkinsApp-Cluster-Prod --services LearnJenkinsApp-Service-Prod2
                 '''
                 }
             }       
@@ -36,6 +36,10 @@ pipeline {
             // environment {
             //     AWS_S3_BUCKET = 'jenkins-files-01172025'
             // }
+
+                    //                     yum install -y python3
+                    // LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json --output json | \
+                    // python3 -c "import sys, json; print(json.load(sys.stdin)['taskDefinition']['revision'])")
                     //echo "Hello S3!" > index.html
                     //aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
                    // aws s3 sync build s3://$AWS_S3_BUCKET
