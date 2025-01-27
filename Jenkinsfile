@@ -18,16 +18,13 @@ pipeline {
                     args "-u root --entrypoint=''"
                 }
             }
-            environment {
-                AWS_S3_BUCKET = 'jenkins-files-01172025'
-            }
+            
             steps {
                 withCredentials([usernamePassword(credentialsId: 'myAWS', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                 sh '''
                     aws --version
-                    yum clean all
-                    yum makecache
-                    yum install jq -y --verbose
+
+                    yum install jq -y 
                     jq --version
                     LATEST_TD_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json | jq '.taskDefinition.revision')
                     echo $LATEST_TD_REVISION
@@ -35,6 +32,10 @@ pipeline {
                 '''
                 }
             }       
+
+            // environment {
+            //     AWS_S3_BUCKET = 'jenkins-files-01172025'
+            // }
                     //echo "Hello S3!" > index.html
                     //aws s3 cp index.html s3://$AWS_S3_BUCKET/index.html
                    // aws s3 sync build s3://$AWS_S3_BUCKET
