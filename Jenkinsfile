@@ -47,7 +47,7 @@ pipeline {
             // -v /var/run/docker.sock:/var/run/docker.sock
             steps {
                 sh '''
-                    
+                    yum install -y amazon-linux-extras
                     amazon-linux-extras enable docker
 
                     # Install Docker
