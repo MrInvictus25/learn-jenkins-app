@@ -51,6 +51,8 @@ pipeline {
                     amazon-linux-extras enable docker
 
                     # Install Docker
+                    yum clean metadata
+                    yum install docker
                     yum install -y docker
                     docker --version
                     docker build -t myjenkinsapp .
