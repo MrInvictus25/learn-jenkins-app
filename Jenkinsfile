@@ -60,12 +60,13 @@ pipeline {
                     fi
 
                     echo "Installing Docker..."
+                    yum clean metadata
+                    yum install docker
+                    echo 'Installing Docker...'
                     yum install -y docker
 
                     echo "Starting Docker daemon..."
-                    # Start the Docker daemon in the background (no systemd available)
-                    nohup dockerd > /tmp/dockerd.log 2>&1 &
-                    sleep 5
+
                     yum-config-manager --disable amzn2-core
                     echo "Docker version:"
                     docker --version
