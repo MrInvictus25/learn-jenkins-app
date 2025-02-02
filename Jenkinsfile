@@ -47,15 +47,37 @@ pipeline {
             // -v /var/run/docker.sock:/var/run/docker.sock
             steps {
                 sh '''
-                    sudo amazon-linux-extras install docker
-                    
+                    set -e
+
+                    echo "Checking for amazon-linux-extras..."
+                    if command -v amazon-linux-extras >/dev/null 2>&1; then
+                        echo "amazon-linux-extras found. Enabling Docker..."
+                        amazon-linux-extras enable docker
+                    else
+                        echo "amazon-linux-extras not found. Installing yum-utils and adding Docker repo manually..."
+                        yum install -y yum-utils
+                        yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+                    fi
+
+                    echo "Installing Docker..."
+                    yum install -y docker
+
+                    echo "Starting Docker daemon..."
+                    # Start the Docker daemon in the background (no systemd available)
+                    nohup dockerd > /tmp/dockerd.log 2>&1 &
+                    sleep 5
+
+                    echo "Docker version:"
                     docker --version
-                    docker build -t myjenkinsapp .
+
                 '''
             }
         }   
-            // amazon-linux-extras enable docker
-
+            // // amazon-linux-extras enable docker
+            //         amazon-linux-extras install docker
+                    
+            //         docker --version
+            //         docker build -t myjenkinsapp .
                     // # Install Docker
                     // yum clean metadata
                     // yum install docker
