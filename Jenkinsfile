@@ -66,7 +66,7 @@ pipeline {
                     # Start the Docker daemon in the background (no systemd available)
                     nohup dockerd > /tmp/dockerd.log 2>&1 &
                     sleep 5
-
+                    yum-config-manager --disable amzn2-core
                     echo "Docker version:"
                     docker --version
 
