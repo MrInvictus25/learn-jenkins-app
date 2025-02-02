@@ -39,7 +39,7 @@ pipeline {
         stage('Build Docker image') {
             agent {
                 docker {
-                    image 'amazonlinux:2'
+                    image 'amazonlinux'
                     reuseNode true
                     args "-u root --entrypoint=''"
                 }
