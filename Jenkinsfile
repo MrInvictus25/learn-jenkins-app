@@ -36,42 +36,42 @@ pipeline {
             }
         }
 
-        // stage('Build Docker image') {
-        //     agent {
-        //         docker {
-        //             image 'amazonlinux:2'
-        //             reuseNode true
-        //             args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
-        //         }
-        //     }
-        //     // -v /var/run/docker.sock:/var/run/docker.sock
-        //     steps {
-        //         sh '''
-        //             set -e
+        stage('Build Docker image') {
+            agent {
+                docker {
+                    image 'amazonlinux:2'
+                    reuseNode true
+                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
+                }
+            }
+            // -v /var/run/docker.sock:/var/run/docker.sock
+            steps {
+                sh '''
+                    set -e
 
-        //             echo "Checking for amazon-linux-extras..."
-        //             if command -v amazon-linux-extras >/dev/null 2>&1; then
-        //                 echo "amazon-linux-extras found. Enabling Docker..."
-        //                 amazon-linux-extras enable docker
-        //             else
-        //                 echo "amazon-linux-extras not found. Installing yum-utils and adding Docker repo manually..."
-        //                 yum install -y yum-utils
-        //                 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-        //             fi
+                    echo "Checking for amazon-linux-extras..."
+                    if command -v amazon-linux-extras >/dev/null 2>&1; then
+                        echo "amazon-linux-extras found. Enabling Docker..."
+                        amazon-linux-extras enable docker
+                    else
+                        echo "amazon-linux-extras not found. Installing yum-utils and adding Docker repo manually..."
+                        yum install -y yum-utils
+                        yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+                    fi
 
-        //             echo "Installing Docker..."
+                    echo "Installing Docker..."
 
-        //             yum install -y docker
+                    yum install -y docker
 
-        //             echo "Starting Docker daemon..."
+                    echo "Starting Docker daemon..."
 
 
-        //             echo "Docker version:"
-        //             docker --version
+                    echo "Docker version:"
+                    docker --version
 
-        //         '''
-        //     }
-        // }   
+                '''
+            }
+        }   
             // // amazon-linux-extras enable docker
             //         amazon-linux-extras install docker
                     
@@ -82,52 +82,7 @@ pipeline {
                     // yum install docker
                     // yum install -y docker
 
-        stage('Configure Yum Repositories') {
-            steps {
-                sh '''
-                    echo "Reconfiguring /etc/yum.repos.d/amzn2-core.repo to use a direct baseurl instead of mirrorlist..."
-                    
-                    cat <<EOF > /etc/yum.repos.d/amzn2-core.repo
-[amzn2-core]
-name=Amazon Linux 2 Core Repository
-# Use a direct baseurl instead of mirrorlist to avoid timeout issues.
-baseurl=http://amazonlinux.default.amazonaws.com/2/core/latest/aarch64/
-enabled=1
-gpgcheck=1
-gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-amazon-linux-2
-EOF
 
-                    echo "Cleaning yum cache..."
-                    yum clean all
-
-                    echo "Rebuilding yum cache..."
-                    yum makecache
-                '''
-            }
-        }
-        stage('Install Docker') {
-            steps {
-                sh '''
-                    echo "Installing yum-utils..."
-                    yum install -y yum-utils
-
-                    echo "Adding Docker repository (if needed)..."
-                    # (Optional) You can add Docker’s official repository if you prefer to use Docker CE packages:
-                    # yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-
-                    echo "Installing Docker..."
-                    yum install -y docker || { echo "Docker installation failed"; exit 1; }
-
-                    echo "Starting Docker daemon..."
-                    # Since systemd is not available in this container, start dockerd manually
-                    nohup dockerd > /tmp/dockerd.log 2>&1 &
-                    sleep 5
-
-                    echo "Docker version:"
-                    docker --version
-                '''
-            }
-        }
 
         stage('Deploy on AWS') {
             agent {
