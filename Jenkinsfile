@@ -60,9 +60,7 @@ pipeline {
                     fi
 
                     echo "Installing Docker..."
-                    yum clean metadata
-                    yum install docker
-                    echo 'Installing Docker...'
+
                     yum install -y docker
 
                     echo "Starting Docker daemon..."
