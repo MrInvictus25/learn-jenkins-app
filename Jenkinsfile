@@ -47,7 +47,7 @@ pipeline {
             // -v /var/run/docker.sock:/var/run/docker.sock
             steps {
                 sh '''
-                    amazon-linux-extras install docker
+                    sudo amazon-linux-extras install docker
                     
                     docker --version
                     docker build -t myjenkinsapp .
