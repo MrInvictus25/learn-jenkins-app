@@ -57,7 +57,7 @@ pipeline {
                         echo "amazon-linux-extras not found. Installing yum-utils and adding Docker repo manually..."
                         yum install -y yum-utils
                         yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-                    fi
+                    
 
                     echo "Installing Docker..."
 
