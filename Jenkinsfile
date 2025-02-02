@@ -39,39 +39,19 @@ pipeline {
         stage('Build Docker image') {
             agent {
                 docker {
-                    image 'amazonlinux:2'
+                    image 'amazon/aws-cli'
                     reuseNode true
                     args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
                 }
             }
-            // -v /var/run/docker.sock:/var/run/docker.sock
+
             steps {
                 sh '''
-                    set -e
-
-                    echo "Checking for amazon-linux-extras..."
-                    if command -v amazon-linux-extras >/dev/null 2>&1; then
-                        echo "amazon-linux-extras found. Enabling Docker..."
-                        amazon-linux-extras enable docker
-                    else
-                        echo "amazon-linux-extras not found. Installing yum-utils and adding Docker repo manually..."
-                        yum install -y yum-utils
-                        yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-                    fi
-
-                    echo "Installing Docker..."
-
-                    yum install -y docker
-
-                    echo "Starting Docker daemon..."
-
-
-                    echo "Docker version:"
-                    docker --version
-
+                    amazon-linux-extras install docker
+                    docker build -t myjenkinsapp .
                 '''
             }
-        }   
+        }    
             // // amazon-linux-extras enable docker
             //         amazon-linux-extras install docker
                     
